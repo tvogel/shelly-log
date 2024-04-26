@@ -6,7 +6,7 @@ import re
 log_pattern = re.compile(r'(\S+) (\d+) (\d+\.\d+) (.*)')
 new_sntp_pattern = re.compile(r'New SNTP time: (\d+\.\d+)')
 
-boot_time = None
+boot_time = {}
 
 def process_line(line):
   """
@@ -31,15 +31,16 @@ def process_line(line):
   if not match:
     print(line, end='')
     return
+  host = match.group(1)
   sys_time = float(match.group(3))
   sntp_match = new_sntp_pattern.search(line)
   if sntp_match:
     new_time = float(sntp_match.group(1))
-    boot_time = new_time - sys_time
-  if not boot_time:
+    boot_time[host] = new_time - sys_time
+  if not host in boot_time:
     print(line, end='')
     return
-  log_datetime = datetime.fromtimestamp(boot_time + sys_time)
+  log_datetime = datetime.fromtimestamp(boot_time[host] + sys_time)
   print(f'{match.group(1)} {match.group(2)} {log_datetime.isoformat()} {match.group(4)}')
 
 def process_log():
