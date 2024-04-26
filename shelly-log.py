@@ -42,9 +42,10 @@ def process_line(line):
   # If either the log_id or the sys_time drops (significantly), there was a reboot,
   # so reset the boot_time.
   # Small drops may happen when log entries are received out-of-order thanks to UDP.
-  if 'log_id' in host_state and log_id < host_state['log_id'] - 10 \
-      or 'sys_time' in host_state and sys_time < host_state['sys_time'] - 10:
-    del host_state['boot_time']
+  if 'boot_time' in host_state \
+    and ('log_id' in host_state and log_id < host_state['log_id'] - 10
+        or 'sys_time' in host_state and sys_time < host_state['sys_time'] - 10):
+      del host_state['boot_time']
 
   sntp_match = new_sntp_pattern.search(line)
   if sntp_match:
