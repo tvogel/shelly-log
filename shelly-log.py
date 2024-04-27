@@ -57,7 +57,7 @@ def process_line(line):
     return
 
   log_datetime = datetime.fromtimestamp(host_state['boot_time'] + sys_time)
-  print(f'{match.group(1)} {match.group(2)} {log_datetime.isoformat()} {match.group(4)}')
+  print(f'{line[0:match.start()]}{match.group(1)} {match.group(2)} {log_datetime.isoformat()} {match.group(4)}')
 
   host_state['log_id'] = log_id
   host_state['sys_time'] = sys_time
